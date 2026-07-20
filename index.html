@@ -3,84 +3,617 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Rising Waters | Flood Intelligence Dashboard</title>
+  <title>Rising Waters | Flood Intelligence Platform</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <div class="app-shell">
+    
+    <!-- Sidebar Navigation -->
     <aside class="sidebar">
-      <a class="brand" href="/"><span class="brand-mark">RW</span><span>Rising<br>Waters</span></a>
-      <nav aria-label="Primary navigation">
-        <a class="nav-item active" href="#assessment">Risk assessment</a>
-        <a class="nav-item" href="#method">Model overview</a>
-        <a class="nav-item" href="#guidance">Safety guidance</a>
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">Rising Waters</span>
+          <span class="brand-tagline">Flood Intelligence</span>
+        </div>
+      </div>
+      
+      <nav aria-label="Primary navigation" class="nav-menu">
+        <a class="nav-item active" href="#dashboard" data-section="dashboard">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          <span>Dashboard</span>
+        </a>
+        <a class="nav-item" href="#methodology" data-section="methodology">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+          <span>Methodology</span>
+        </a>
+        <a class="nav-item" href="#safety" data-section="safety">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Safety Protocols</span>
+        </a>
+        <a class="nav-item" href="#logs" data-section="logs">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>History Log Hub</span>
+        </a>
       </nav>
-      <div class="sidebar-foot"><span class="dot"></span> System monitoring<br><small>Educational prototype</small></div>
+
+      <div class="sidebar-footer">
+        <div class="status-indicator">
+          <span class="pulse-dot"></span>
+          <span class="status-text">Model Active v1.7</span>
+        </div>
+        <div class="telemetry">
+          <div class="tel-row"><span>Latency:</span><span id="ping-time">14ms</span></div>
+          <div class="tel-row"><span>Accuracy:</span><span id="model-acc">94.8%</span></div>
+        </div>
+      </div>
     </aside>
 
-    <main class="main-content">
-      <header class="topbar">
-        <div><p class="eyebrow">FLOOD INTELLIGENCE PLATFORM</p><h1>Risk assessment dashboard</h1></div>
-        <div class="status"><span class="status-dot"></span> Model online</div>
-      </header>
-
-      <section class="notice" aria-label="Prototype notice">
-        <strong>Decision-support prototype.</strong> Use official meteorological and emergency-management information for all real-world response decisions.
-      </section>
-
-      <section class="dashboard-grid" id="assessment">
-        <article class="panel form-panel">
-          <div class="panel-heading"><div><p class="section-label">LIVE INPUT</p><h2>Environmental conditions</h2></div><span class="required">All fields required</span></div>
-          <p class="muted">Provide observations for the selected district over the current monitoring period.</p>
-          <div class="scenario-row" aria-label="Try a sample scenario">
-            <span>Sample scenarios</span>
-            <button class="scenario" type="button" data-scenario="low">Routine day</button>
-            <button class="scenario" type="button" data-scenario="high">Severe rain</button>
+    <!-- Main Content Area -->
+    <main class="main-container">
+      
+      <!-- Top Alert Ticker -->
+      <div class="alert-ticker-container">
+        <div class="alert-label"><span class="ticker-dot"></span> LIVE TELEMETRY</div>
+        <div class="ticker-wrap">
+          <div class="ticker-scroll" id="ticker-feed">
+            System status operational. Random Forest classification loaded. District Alpha river basins monitored.
           </div>
-          <form method="post" id="risk-form">
-            <div class="field-grid">
-              <label>24-hour rainfall <span>mm</span><input name="rainfall" type="number" min="0" max="600" step="0.1" placeholder="e.g. 125" required value="{{ values.rainfall }}"></label>
-              <label>Cloud cover <span>%</span><input name="cloud_cover" type="number" min="0" max="100" step="0.1" placeholder="e.g. 86" required value="{{ values.cloud_cover }}"></label>
-              <label>River level <span>metres</span><input name="river_level" type="number" min="0" max="15" step="0.1" placeholder="e.g. 6.4" required value="{{ values.river_level }}"></label>
-              <label>Relative humidity <span>%</span><input name="humidity" type="number" min="0" max="100" step="0.1" placeholder="e.g. 78" required value="{{ values.humidity }}"></label>
+        </div>
+      </div>
+
+      <!-- SECTION 1: DASHBOARD -->
+      <section id="dashboard" class="content-section active">
+        <header class="section-header">
+          <div>
+            <p class="section-eyebrow">REAL-TIME RISK SIMULATION</p>
+            <h1 class="section-title">Flood Intelligence Dashboard</h1>
+          </div>
+          <div class="district-selector">
+            <label for="station-select">Monitoring Station</label>
+            <select id="station-select">
+              <option value="alpha">Station Alpha (Main Basin)</option>
+              <option value="beta">Station Beta (Upper Delta)</option>
+              <option value="gamma">Station Gamma (Coastal Runoff)</option>
+            </select>
+          </div>
+        </header>
+
+        <div class="dashboard-grid">
+          
+          <!-- Column 1: Live Inputs & Preset Controls -->
+          <div class="col-inputs">
+            
+            <!-- Sensor Observations Panel -->
+            <div class="panel glass-card">
+              <div class="panel-heading">
+                <h2>Sensor Observations</h2>
+                <span class="badge">Real-Time Sync</span>
+              </div>
+              <p class="panel-desc">Adjust environmental sensors manually or trigger presets to evaluate flood risk.</p>
+              
+              <div class="presets-container">
+                <span class="presets-label">Scenarios:</span>
+                <div class="presets-list">
+                  <button class="preset-btn" data-rainfall="12" data-cloud="25" data-river="2.1" data-humidity="45">Dry Season</button>
+                  <button class="preset-btn" data-rainfall="135" data-cloud="82" data-river="6.4" data-humidity="78">Rainy Outlook</button>
+                  <button class="preset-btn" data-rainfall="310" data-cloud="95" data-river="11.2" data-humidity="92">Severe Storm</button>
+                  <button class="preset-btn" data-rainfall="450" data-cloud="99" data-river="13.9" data-humidity="96">Basin Overflow</button>
+                </div>
+              </div>
+
+              <form id="sensor-form">
+                <div class="sliders-grid">
+                  
+                  <!-- Rainfall -->
+                  <div class="slider-group">
+                    <div class="slider-meta">
+                      <label for="rainfall-input">24h Rainfall</label>
+                      <span class="val-display"><input type="number" id="rainfall-val" min="0" max="600" step="0.1" value="80"> mm</span>
+                    </div>
+                    <input type="range" id="rainfall-input" name="rainfall" min="0" max="600" step="0.1" value="80">
+                    <div class="slider-labels"><span>0mm</span><span>600mm (Extreme)</span></div>
+                  </div>
+
+                  <!-- Cloud Cover -->
+                  <div class="slider-group">
+                    <div class="slider-meta">
+                      <label for="cloud-input">Cloud Cover</label>
+                      <span class="val-display"><input type="number" id="cloud-val" min="0" max="100" step="0.1" value="65"> %</span>
+                    </div>
+                    <input type="range" id="cloud-input" name="cloud_cover" min="0" max="100" step="0.1" value="65">
+                    <div class="slider-labels"><span>Clear</span><span>Overcast</span></div>
+                  </div>
+
+                  <!-- River Level -->
+                  <div class="slider-group">
+                    <div class="slider-meta">
+                      <label for="river-input">River Basin Level</label>
+                      <span class="val-display"><input type="number" id="river-val" min="0" max="15" step="0.1" value="4.5"> m</span>
+                    </div>
+                    <input type="range" id="river-input" name="river_level" min="0" max="15" step="0.1" value="4.5">
+                    <div class="slider-labels"><span>Dry (0m)</span><span>Flood Stage (15m)</span></div>
+                  </div>
+
+                  <!-- Humidity -->
+                  <div class="slider-group">
+                    <div class="slider-meta">
+                      <label for="humidity-input">Relative Humidity</label>
+                      <span class="val-display"><input type="number" id="humidity-val" min="0" max="100" step="0.1" value="70"> %</span>
+                    </div>
+                    <input type="range" id="humidity-input" name="humidity" min="0" max="100" step="0.1" value="70">
+                    <div class="slider-labels"><span>0%</span><span>100% (Saturated)</span></div>
+                  </div>
+
+                </div>
+                <button type="submit" class="submit-btn">
+                  <span>Log Prediction in History Hub</span>
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </form>
             </div>
-            <button type="submit">Generate risk assessment <span>→</span></button>
-          </form>
-        </article>
 
-        <article class="panel result-panel">
-          <div class="panel-heading"><div><p class="section-label">MODEL OUTPUT</p><h2>Flood risk status</h2></div><span class="model-badge">Random Forest</span></div>
-          {% if error %}
-            <div class="alert error"><strong>Input check required</strong><br>{{ error }}</div>
-          {% elif result %}
-            <div class="risk-result">
-              <p class="risk-label">Current classification</p>
-              <p class="risk {{ result.risk|lower }}">{{ result.risk }}</p>
-              <p class="probability"><strong>{{ result.probability }}%</strong> predicted likelihood</p>
-              <div class="meter"><span class="meter-fill {{ result.risk|lower }}" style="width: {{ result.probability }}%"></span></div>
-              <div class="recommendation"><strong>Recommended action</strong><p>{% if result.risk == 'High' %}Activate local response procedures and follow guidance from emergency authorities.{% elif result.risk == 'Moderate' %}Increase monitoring frequency and prepare local response resources.{% else %}Maintain routine monitoring and review official weather forecasts.{% endif %}</p></div>
+            <!-- Time-Series Simulator Panel -->
+            <div class="panel glass-card simulator-panel">
+              <div class="panel-heading">
+                <h2>Time-Series Storm Simulator</h2>
+                <div class="sim-status" id="sim-indicator">Idle</div>
+              </div>
+              <p class="panel-desc">Animate a simulated 7-day storm progression to evaluate weather patterns dynamically.</p>
+              
+              <div class="simulator-controls">
+                <button id="sim-play-btn" class="sim-btn play">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <span>Simulate Storm Cycle</span>
+                </button>
+                <button id="sim-pause-btn" class="sim-btn pause" disabled>
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                  <span>Pause</span>
+                </button>
+                <button id="sim-reset-btn" class="sim-btn reset">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                </button>
+              </div>
+
+              <div class="sim-timeline">
+                <div class="timeline-labels">
+                  <span>Day 1</span><span>Day 2</span><span>Day 3</span><span>Day 4 (Peak)</span><span>Day 5</span><span>Day 6</span><span>Day 7</span>
+                </div>
+                <div class="timeline-track">
+                  <div class="timeline-fill" id="sim-progress" style="width: 0%;"></div>
+                  <div class="timeline-thumb" id="sim-thumb" style="left: 0%;"></div>
+                </div>
+              </div>
             </div>
-          {% else %}
-            <div class="empty-state"><div class="empty-icon">⌁</div><h3>Awaiting observations</h3><p>Submit current environmental values to generate a flood-risk assessment.</p></div>
-          {% endif %}
-        </article>
+
+          </div>
+
+          <!-- Column 2: Visual Gauge, Map Overlay, Graphs -->
+          <div class="col-outputs">
+            
+            <!-- Prediction Status Glass Card -->
+            <div class="panel glass-card risk-output-panel">
+              <div class="panel-heading">
+                <h2>Risk Classification</h2>
+                <span class="model-badge">Random Forest Core</span>
+              </div>
+              
+              <div class="gauge-section">
+                <!-- Circular Water Wave Gauge -->
+                <div class="gauge-container">
+                  <svg class="gauge-ring" viewBox="0 0 100 100">
+                    <circle class="gauge-ring-bg" cx="50" cy="50" r="45" />
+                    <circle class="gauge-ring-fill" id="gauge-fill-ring" cx="50" cy="50" r="45" stroke-dasharray="283" stroke-dashoffset="283" />
+                  </svg>
+                  
+                  <div class="water-wave-box" id="gauge-wave-box">
+                    <div class="water-wave-fill" id="gauge-wave-fill">
+                      <svg class="wave-svg" viewBox="0 0 120 28" repeatCount="indefinite">
+                        <path d="M0,15 C30,5 90,20 120,15 L120,30 L0,30 Z" class="wave-back"></path>
+                        <path d="M0,15 C30,25 90,10 120,15 L120,30 L0,30 Z" class="wave-front"></path>
+                      </svg>
+                    </div>
+                    <div class="gauge-text">
+                      <span class="prob-label">PREDICTED RISK</span>
+                      <strong class="prob-percentage" id="risk-pct">--%</strong>
+                      <span class="risk-badge" id="risk-text">Awaiting Sensor Data</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Emergency Action Box -->
+                <div class="advisory-box">
+                  <h3>AI Response Advisory</h3>
+                  <p id="advisory-text">Configure parameters to calculate threat probability and active protocol guidance.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dynamic District Map & Trend Grid -->
+            <div class="map-grid">
+              
+              <!-- Interactive Area Flood Overlay (SVG) -->
+              <div class="panel glass-card map-panel">
+                <div class="panel-heading">
+                  <h2>District Hydrology Map</h2>
+                  <span class="map-status-dot green"></span>
+                </div>
+                <div class="map-container">
+                  <svg class="district-svg" viewBox="0 0 300 200">
+                    <!-- Background Terrain -->
+                    <rect width="300" height="200" rx="8" fill="#111c2e" />
+                    
+                    <!-- Zone 1: Highlands (Low Risk Zone) -->
+                    <path id="zone-highlands" d="M20,20 L130,20 L90,80 L20,80 Z" fill="#2d3b55" opacity="0.85"/>
+                    <text x="40" y="45" fill="#a0aec0" font-size="8" font-weight="700">ZONE A: HIGHLANDS</text>
+                    
+                    <!-- Zone 2: Industrial Area (Moderate Threshold) -->
+                    <path id="zone-industrial" d="M140,20 L280,20 L280,90 L180,90 Z" fill="#2d3b55" opacity="0.85"/>
+                    <text x="185" y="45" fill="#a0aec0" font-size="8" font-weight="700">ZONE B: INDUSTRIAL PARK</text>
+
+                    <!-- Zone 3: Residential District (High Danger Threshold) -->
+                    <path id="zone-residential" d="M20,95 L120,95 L140,180 L20,180 Z" fill="#2d3b55" opacity="0.85"/>
+                    <text x="35" y="130" fill="#a0aec0" font-size="8" font-weight="700">ZONE C: CITY RESIDENTIAL</text>
+                    
+                    <!-- Zone 4: Agricultural Plain (Extremely Flood-Prone) -->
+                    <path id="zone-agricultural" d="M150,105 L280,95 L280,180 L160,180 Z" fill="#2d3b55" opacity="0.85"/>
+                    <text x="175" y="130" fill="#a0aec0" font-size="8" font-weight="700">ZONE D: AGRICULTURAL FLAATS</text>
+                    
+                    <!-- Flood Overlays -->
+                    <path id="overlay-highlands" d="M20,20 L130,20 L90,80 L20,80 Z" class="flood-overlay" fill="#3182ce" opacity="0"/>
+                    <path id="overlay-industrial" d="M140,20 L280,20 L280,90 L180,90 Z" class="flood-overlay" fill="#dd6b20" opacity="0"/>
+                    <path id="overlay-residential" d="M20,95 L120,95 L140,180 L20,180 Z" class="flood-overlay" fill="#e53e3e" opacity="0"/>
+                    <path id="overlay-agricultural" d="M150,105 L280,95 L280,180 L160,180 Z" class="flood-overlay" fill="#e53e3e" opacity="0"/>
+
+                    <!-- Flowing River (Cuts through the map) -->
+                    <path id="map-river" d="M125,20 C110,60 160,120 145,180" fill="none" stroke="#2b6cb0" stroke-width="8" stroke-linecap="round" />
+                    <path id="map-river-flood" d="M125,20 C110,60 160,120 145,180" fill="none" stroke="#63b3ed" stroke-width="0" stroke-linecap="round" class="river-expansion" opacity="0.6"/>
+
+                    <!-- Station Indicator -->
+                    <circle id="map-station-dot" cx="137" cy="90" r="5" fill="#3182ce" stroke="#fff" stroke-width="1.5" class="pulsing-station"/>
+                    <text x="145" y="93" fill="#fff" font-size="7" font-weight="bold">STATION</text>
+                  </svg>
+                </div>
+                <div class="map-labels">
+                  <span><i class="dot-ind blue"></i> River Basin</span>
+                  <span><i class="dot-ind green"></i> Dry Land</span>
+                  <span><i class="dot-ind amber"></i> Shallow Flooding</span>
+                  <span><i class="dot-ind red"></i> Submerged Zone</span>
+                </div>
+              </div>
+
+              <!-- Risk Trend Simulation Chart Card -->
+              <div class="panel glass-card chart-panel">
+                <div class="panel-heading">
+                  <h2>Risk Trend Simulation</h2>
+                  <span id="trend-legend-lbl">Live Forecast</span>
+                </div>
+                <div class="chart-container">
+                  <svg viewBox="0 0 320 120" class="trend-chart-svg">
+                    <!-- Grid Lines -->
+                    <line x1="0" y1="90" x2="320" y2="90" class="chart-grid-line" />
+                    <line x1="0" y1="60" x2="320" y2="60" class="chart-grid-line" />
+                    <line x1="0" y1="30" x2="320" y2="30" class="chart-grid-line" />
+                    <!-- Grid Labels -->
+                    <text x="290" y="85" class="chart-lbl">Low</text>
+                    <text x="290" y="55" class="chart-lbl">Moderate</text>
+                    <text x="290" y="25" class="chart-lbl">High</text>
+                    
+                    <!-- Trend Line -->
+                    <polyline id="trend-graph-line" points="0,110 53,110 106,110 159,110 212,110 265,110 320,110" class="graph-line" />
+                  </svg>
+                </div>
+                <div class="chart-footer-meta">
+                  <span>T-12h</span>
+                  <span>T-6h</span>
+                  <span>Current Prediction (T-0)</span>
+                  <span>Forecast +12h</span>
+                  <span>Forecast +24h</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section class="live-section" aria-label="Live simulation preview">
-        <article class="live-card">
-          <div><p class="section-label">INTERACTIVE SIMULATOR</p><h2>Live risk preview</h2><p>Updates instantly as you enter observations. Submit the form for the model’s saved prediction.</p></div>
-          <div class="live-risk"><span id="preview-label">Awaiting data</span><strong id="preview-score">—</strong><small>simulation score</small></div>
-        </article>
-        <article class="chart-card"><div class="chart-heading"><h3>Risk trend simulation</h3><span id="trend-caption">Enter conditions to begin</span></div><svg viewBox="0 0 440 110" role="img" aria-label="Simulated risk trend"><path class="chart-grid" d="M0 88H440M0 55H440M0 22H440"/><polyline id="trend-line" points="0,88 73,85 146,89 220,84 293,87 366,83 440,85"/></svg><div class="chart-legend"><span><i></i> simulated risk signal</span><span>Next 6 monitoring intervals</span></div></article>
+      <!-- SECTION 2: METHODOLOGY -->
+      <section id="methodology" class="content-section">
+        <header class="section-header">
+          <div>
+            <p class="section-eyebrow">MODEL DETAILS & EXPLANATIONS</p>
+            <h1 class="section-title">Machine Learning Methodology</h1>
+          </div>
+        </header>
+
+        <div class="methodology-grid">
+          
+          <!-- Classifier Breakdown Card -->
+          <div class="panel glass-card">
+            <h2>Supervised Random Forest Core</h2>
+            <p>Our predictive system is powered by an ensemble Random Forest Classifier consisting of 250 decision trees, trained on synthetic and historical localized hydrological events. The model analyzes multi-layered environmental parameters simultaneously to classify risks with greater accuracy than single factor limits.</p>
+            
+            <div class="metrics-block">
+              <h3>Model Validation Metrics</h3>
+              <div class="metrics-grid">
+                <div class="metric-card">
+                  <span class="m-val" id="model-acc-val">94.8%</span>
+                  <span class="m-label">Overall Accuracy</span>
+                </div>
+                <div class="metric-card">
+                  <span class="m-val" id="model-prec-val">93.2%</span>
+                  <span class="m-label">Precision (Flood)</span>
+                </div>
+                <div class="metric-card">
+                  <span class="m-val" id="model-rec-val">95.4%</span>
+                  <span class="m-label">Recall (Flood)</span>
+                </div>
+                <div class="metric-card">
+                  <span class="m-val" id="model-f1-val">94.3%</span>
+                  <span class="m-label">F1-Score (Flood)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="train-action-box">
+              <div class="train-txt-side">
+                <h3>Recalibrate Machine Learning Model</h3>
+                <p>Trigger a full model training sweep with scikit-learn. Generates 2500 weather points, splits train/test partitions, trains trees, and yields dynamic validation results.</p>
+              </div>
+              <button id="btn-retrain" class="train-btn">
+                <span class="spinner-btn" id="train-spinner" style="display: none;"></span>
+                <span id="train-btn-lbl">Retrain Model</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Feature Importance / Signals Panel -->
+          <div class="panel glass-card">
+            <h2>Feature Contribution Strength</h2>
+            <p>Decision weights outline the influence of each environmental parameter in establishing risk classifications.</p>
+            
+            <div class="features-importance-container">
+              <!-- Feature 1: Rainfall -->
+              <div class="feature-bar-row">
+                <div class="f-meta">
+                  <span class="f-name">Rainfall Volume</span>
+                  <span class="f-wt">42% weight</span>
+                </div>
+                <div class="f-bar-track">
+                  <div class="f-bar-fill" style="width: 42%; background: #63b3ed;"></div>
+                </div>
+              </div>
+
+              <!-- Feature 2: River Basin Level -->
+              <div class="feature-bar-row">
+                <div class="f-meta">
+                  <span class="f-name">River Basin Depth</span>
+                  <span class="f-wt">38% weight</span>
+                </div>
+                <div class="f-bar-track">
+                  <div class="f-bar-fill" style="width: 38%; background: #4299e1;"></div>
+                </div>
+              </div>
+
+              <!-- Feature 3: Relative Humidity -->
+              <div class="feature-bar-row">
+                <div class="f-meta">
+                  <span class="f-name">Relative Humidity</span>
+                  <span class="f-wt">12% weight</span>
+                </div>
+                <div class="f-bar-track">
+                  <div class="f-bar-fill" style="width: 12%; background: #3182ce;"></div>
+                </div>
+              </div>
+
+              <!-- Feature 4: Cloud Density -->
+              <div class="feature-bar-row">
+                <div class="f-meta">
+                  <span class="f-name">Cloud Density</span>
+                  <span class="f-wt">8% weight</span>
+                </div>
+                <div class="f-bar-track">
+                  <div class="f-bar-fill" style="width: 8%; background: #2b6cb0;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="methodology-notices">
+              <div class="methodology-note-item">
+                <span class="number">1</span>
+                <div>
+                  <h4>Non-linear Relationships</h4>
+                  <p>Individual thresholds can be safe on their own, but high rainfall combined with elevated basins triggers dramatic risk acceleration.</p>
+                </div>
+              </div>
+              <div class="methodology-note-item">
+                <span class="number">2</span>
+                <div>
+                  <h4>Stochastic Elements</h4>
+                  <p>The model simulates minor atmospheric noise during training splits to avoid overfitting on stable river scenarios.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </section>
 
-      <section class="info-grid" id="method">
-        <article class="info-card"><p class="section-label">01</p><h3>Data signals</h3><p>Rainfall, cloud cover, river level, and humidity are assessed together to identify changing flood conditions.</p></article>
-        <article class="info-card"><p class="section-label">02</p><h3>Model assessment</h3><p>A supervised Random Forest classifier estimates risk from the submitted environmental observations.</p></article>
-        <article class="info-card" id="guidance"><p class="section-label">03</p><h3>Safe response</h3><p>Use this result for learning and planning only. Always defer to official alerts and evacuation instructions.</p></article>
+      <!-- SECTION 3: SAFETY GUIDANCE -->
+      <section id="safety" class="content-section">
+        <header class="section-header">
+          <div>
+            <p class="section-eyebrow">EMERGENCY OPERATIONS MANUAL</p>
+            <h1 class="section-title">Safety Guidance & Shelters</h1>
+          </div>
+        </header>
+
+        <div class="safety-grid">
+          
+          <!-- Live Status checklist card -->
+          <div class="panel glass-card">
+            <h2>Current Preparedness Directive</h2>
+            <div class="safety-level-banner" id="safety-level-color">
+              <span id="safety-status-lbl">LOW RISK PREVAILS</span>
+              <p id="safety-sub-lbl">No emergency operations active. Monitor routine meteorology.</p>
+            </div>
+
+            <div class="checklist-box">
+              <h3>Risk-Based Action Checklist</h3>
+              <p class="panel-desc">Duties recommended for safety responders under current status.</p>
+              
+              <ul class="task-checklist-items" id="safety-checklist">
+                <!-- Javascript populated dynamic safety list -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- Safe Shelters & Contacts -->
+          <div class="panel glass-card">
+            <h2>Crisis Shelters & Contact Hotlines</h2>
+            <p class="panel-desc">Key physical assembly shelters in the district delta, mapped by elevation levels.</p>
+            
+            <div class="shelter-map-box">
+              <svg viewBox="0 0 280 130" class="shelter-svg">
+                <rect width="280" height="130" rx="8" fill="#171923"/>
+                <!-- Shelter points -->
+                <circle cx="50" cy="40" r="6" fill="#38a169"/>
+                <text x="62" y="43" fill="#fff" font-size="8" font-weight="700">1. NORTH HIGHLANDS ACADEMY (Elev. 25m) - Safe</text>
+
+                <circle cx="210" cy="70" r="6" fill="#dd6b20" id="shelter-center-dot"/>
+                <text x="60" y="73" fill="#a0aec0" font-size="8" id="shelter-center-text">2. DELTA COMMUNITY CENTER (Elev. 4m) - Monitor</text>
+
+                <circle cx="120" cy="100" r="6" fill="#3182ce"/>
+                <text x="132" y="103" fill="#fff" font-size="8" font-weight="700">3. EAST RIDGE COMPLEX (Elev. 18m) - Safe</text>
+              </svg>
+            </div>
+
+            <div class="emergency-contacts">
+              <h3>Emergency Responder Contacts</h3>
+              <div class="contacts-grid">
+                <div class="contact-card">
+                  <span>Delta Flood Control Room</span>
+                  <strong>+1 (800) 555-FLOD</strong>
+                </div>
+                <div class="contact-card">
+                  <span>Civil Protection & Response</span>
+                  <strong>+1 (800) 555-SAFE</strong>
+                </div>
+                <div class="contact-card">
+                  <span>Emergency Ambulance Dispatch</span>
+                  <strong>911 / 112</strong>
+                </div>
+                <div class="contact-card">
+                  <span>Municipal Meteorological Office</span>
+                  <strong>+1 (800) 555-RAIN</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </section>
+
+      <!-- SECTION 4: HISTORICAL LOGS HUB -->
+      <section id="logs" class="content-section">
+        <header class="section-header">
+          <div>
+            <p class="section-eyebrow">LOCAL DATABASE STATS</p>
+            <h1 class="section-title">Prediction Log Hub</h1>
+          </div>
+        </header>
+
+        <div class="panel glass-card logs-panel">
+          <div class="logs-header-actions">
+            <div class="logs-filter-group">
+              <input type="text" id="logs-search" placeholder="Search by risk status, date, values...">
+              <select id="logs-filter-select">
+                <option value="all">Show All Logs</option>
+                <option value="high">High Risk Only</option>
+                <option value="moderate">Moderate Risk Only</option>
+                <option value="low">Low Risk Only</option>
+              </select>
+            </div>
+            
+            <div class="logs-buttons">
+              <button id="btn-export-csv" class="log-action-btn primary">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Export CSV Report</span>
+              </button>
+              <button id="btn-clear-logs" class="log-action-btn hazard">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                <span>Clear Database</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-scroll-container">
+            <table class="logs-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Station</th>
+                  <th>Rainfall (mm)</th>
+                  <th>Cloud Cover (%)</th>
+                  <th>River Basin (m)</th>
+                  <th>Humidity (%)</th>
+                  <th>Calculated Likelihood</th>
+                  <th>Classification</th>
+                </tr>
+              </thead>
+              <tbody id="logs-table-body">
+                <!-- Javascript populated dynamic table rows -->
+              </tbody>
+            </table>
+            
+            <div id="no-logs-state" class="table-empty-state">
+              <div class="empty-log-icon">🗂️</div>
+              <h3>No Prediction Logs Recorded</h3>
+              <p>Perform risk evaluations on the dashboard or run the storm simulator to capture hydrological data logs.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </main>
   </div>
+
+  <!-- FLOATING CHATBOT WIDGET -->
+  <div class="chatbot-wrapper collapsed" id="chatbot-widget">
+    <div class="chat-header" id="chat-header-bar">
+      <div class="chat-title">
+        <span class="chat-pulse"></span>
+        <span class="chat-name">HydroAI Safety Assistant</span>
+      </div>
+      <button class="chat-toggle-btn" id="chat-close-btn">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+      </button>
+    </div>
+    
+    <div class="chat-messages-container" id="chat-messages">
+      <div class="chat-bubble bot">
+        Hello! I'm HydroAI, your localized flood preparation assistant. Ask me questions about river safety, emergency shelters, or checklist protocols.
+      </div>
+    </div>
+    
+    <form class="chat-input-form" id="chat-form">
+      <input type="text" id="chat-input" placeholder="Type a message (e.g. 'shelter info', 'checklists')..." autocomplete="off">
+      <button type="submit" class="chat-send-btn">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </form>
+  </div>
+
   <script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>
