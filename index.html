@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rising Waters | Flood Intelligence Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="/"><span class="brand-mark">RW</span><span>Rising<br>Waters</span></a>
+      <nav aria-label="Primary navigation">
+        <a class="nav-item active" href="#assessment">Risk assessment</a>
+        <a class="nav-item" href="#method">Model overview</a>
+        <a class="nav-item" href="#guidance">Safety guidance</a>
+      </nav>
+      <div class="sidebar-foot"><span class="dot"></span> System monitoring<br><small>Educational prototype</small></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div><p class="eyebrow">FLOOD INTELLIGENCE PLATFORM</p><h1>Risk assessment dashboard</h1></div>
+        <div class="status"><span class="status-dot"></span> Model online</div>
+      </header>
+
+      <section class="notice" aria-label="Prototype notice">
+        <strong>Decision-support prototype.</strong> Use official meteorological and emergency-management information for all real-world response decisions.
+      </section>
+
+      <section class="dashboard-grid" id="assessment">
+        <article class="panel form-panel">
+          <div class="panel-heading"><div><p class="section-label">LIVE INPUT</p><h2>Environmental conditions</h2></div><span class="required">All fields required</span></div>
+          <p class="muted">Provide observations for the selected district over the current monitoring period.</p>
+          <div class="scenario-row" aria-label="Try a sample scenario">
+            <span>Sample scenarios</span>
+            <button class="scenario" type="button" data-scenario="low">Routine day</button>
+            <button class="scenario" type="button" data-scenario="high">Severe rain</button>
+          </div>
+          <form method="post" id="risk-form">
+            <div class="field-grid">
+              <label>24-hour rainfall <span>mm</span><input name="rainfall" type="number" min="0" max="600" step="0.1" placeholder="e.g. 125" required value="{{ values.rainfall }}"></label>
+              <label>Cloud cover <span>%</span><input name="cloud_cover" type="number" min="0" max="100" step="0.1" placeholder="e.g. 86" required value="{{ values.cloud_cover }}"></label>
+              <label>River level <span>metres</span><input name="river_level" type="number" min="0" max="15" step="0.1" placeholder="e.g. 6.4" required value="{{ values.river_level }}"></label>
+              <label>Relative humidity <span>%</span><input name="humidity" type="number" min="0" max="100" step="0.1" placeholder="e.g. 78" required value="{{ values.humidity }}"></label>
+            </div>
+            <button type="submit">Generate risk assessment <span>→</span></button>
+          </form>
+        </article>
+
+        <article class="panel result-panel">
+          <div class="panel-heading"><div><p class="section-label">MODEL OUTPUT</p><h2>Flood risk status</h2></div><span class="model-badge">Random Forest</span></div>
+          {% if error %}
+            <div class="alert error"><strong>Input check required</strong><br>{{ error }}</div>
+          {% elif result %}
+            <div class="risk-result">
+              <p class="risk-label">Current classification</p>
+              <p class="risk {{ result.risk|lower }}">{{ result.risk }}</p>
+              <p class="probability"><strong>{{ result.probability }}%</strong> predicted likelihood</p>
+              <div class="meter"><span class="meter-fill {{ result.risk|lower }}" style="width: {{ result.probability }}%"></span></div>
+              <div class="recommendation"><strong>Recommended action</strong><p>{% if result.risk == 'High' %}Activate local response procedures and follow guidance from emergency authorities.{% elif result.risk == 'Moderate' %}Increase monitoring frequency and prepare local response resources.{% else %}Maintain routine monitoring and review official weather forecasts.{% endif %}</p></div>
+            </div>
+          {% else %}
+            <div class="empty-state"><div class="empty-icon">⌁</div><h3>Awaiting observations</h3><p>Submit current environmental values to generate a flood-risk assessment.</p></div>
+          {% endif %}
+        </article>
+      </section>
+
+      <section class="live-section" aria-label="Live simulation preview">
+        <article class="live-card">
+          <div><p class="section-label">INTERACTIVE SIMULATOR</p><h2>Live risk preview</h2><p>Updates instantly as you enter observations. Submit the form for the model’s saved prediction.</p></div>
+          <div class="live-risk"><span id="preview-label">Awaiting data</span><strong id="preview-score">—</strong><small>simulation score</small></div>
+        </article>
+        <article class="chart-card"><div class="chart-heading"><h3>Risk trend simulation</h3><span id="trend-caption">Enter conditions to begin</span></div><svg viewBox="0 0 440 110" role="img" aria-label="Simulated risk trend"><path class="chart-grid" d="M0 88H440M0 55H440M0 22H440"/><polyline id="trend-line" points="0,88 73,85 146,89 220,84 293,87 366,83 440,85"/></svg><div class="chart-legend"><span><i></i> simulated risk signal</span><span>Next 6 monitoring intervals</span></div></article>
+      </section>
+
+      <section class="info-grid" id="method">
+        <article class="info-card"><p class="section-label">01</p><h3>Data signals</h3><p>Rainfall, cloud cover, river level, and humidity are assessed together to identify changing flood conditions.</p></article>
+        <article class="info-card"><p class="section-label">02</p><h3>Model assessment</h3><p>A supervised Random Forest classifier estimates risk from the submitted environmental observations.</p></article>
+        <article class="info-card" id="guidance"><p class="section-label">03</p><h3>Safe response</h3><p>Use this result for learning and planning only. Always defer to official alerts and evacuation instructions.</p></article>
+      </section>
+    </main>
+  </div>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
