@@ -1,6 +1,6 @@
 """Rising Waters: a simple flood-risk prediction web application."""
 from pathlib import Path
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, send_from_directory, request, jsonify
 import joblib
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
@@ -24,7 +24,7 @@ def get_model():
 
 @app.route("/", methods=["GET"])
 def index():
-    return render_template("index.html")
+    return send_from_directory(BASE_DIR, "index.html")
 
 @app.route("/api/predict", methods=["POST"])
 def predict():

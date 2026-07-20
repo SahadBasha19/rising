@@ -34,3 +34,12 @@ git branch -M main
 git remote add origin https://github.com/YOUR-USERNAME/rising-waters.git
 git push -u origin main
 ```
+
+## GitHub Pages deployment
+
+This project includes a static site entrypoint at `index.html` and a `docs/` copy for GitHub Pages.
+
+- If your Pages source is set to the repository root, GitHub will serve `index.html` and the `static/` folder.
+- If your Pages source is set to the `docs/` folder, GitHub will serve `docs/index.html` and `docs/static/`.
+
+Make sure `index.html` is in the root or `docs/` directory and that the folder contains the `static/` assets.
