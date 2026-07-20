@@ -47,7 +47,7 @@ body {
 /* App Shell Layout */
 .app-shell {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 300px 1fr;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
@@ -672,8 +672,8 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .gauge-container {
-  width: 180px;
-  height: 180px;
+  width: 220px;
+  height: 220px;
   position: relative;
 }
 
@@ -686,26 +686,26 @@ input[type="range"]::-moz-range-thumb {
 .gauge-ring-bg {
   fill: none;
   stroke: rgba(255, 255, 255, 0.03);
-  stroke-width: 5px;
+  stroke-width: 6px;
 }
 
 .gauge-ring-fill {
   fill: none;
-  stroke-width: 5px;
+  stroke-width: 7px;
   stroke-linecap: round;
   stroke: var(--neon-blue);
-  transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.4s ease;
+  transition: stroke-dashoffset 0.45s cubic-bezier(0.4, 0, 0.2, 1), stroke 0.3s ease;
 }
 
 .water-wave-box {
   position: absolute;
   top: 10px;
   left: 10px;
-  width: 160px;
-  height: 160px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   overflow: hidden;
-  background-color: rgba(0, 0, 0, 0.35);
+  background-color: rgba(0, 0, 0, 0.4);
   border: 2px solid var(--border-glass);
   display: flex;
   flex-direction: column;
@@ -720,8 +720,8 @@ input[type="range"]::-moz-range-thumb {
   bottom: 0;
   width: 100%;
   height: 50%; /* JS controlled */
-  background-color: rgba(66, 153, 225, 0.25);
-  transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease;
+  background-color: rgba(66, 153, 225, 0.28);
+  transition: height 0.45s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
   z-index: 1;
 }
 
@@ -729,10 +729,10 @@ input[type="range"]::-moz-range-thumb {
   position: absolute;
   left: 0;
   bottom: 100%;
-  width: 200%;
-  height: 20px;
+  width: 220%;
+  height: 22px;
   overflow: visible;
-  animation: wave-run 4s linear infinite;
+  animation: wave-run 3.8s linear infinite;
   display: block;
 }
 
@@ -765,11 +765,11 @@ input[type="range"]::-moz-range-thumb {
 
 .prob-percentage {
   font-family: var(--font-family-display);
-  font-size: 40px;
-  font-weight: 800;
+  font-size: 48px;
+  font-weight: 900;
   color: #fff;
   letter-spacing: -0.03em;
-  line-height: 1.1;
+  line-height: 1.05;
 }
 
 .risk-badge {

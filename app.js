@@ -126,9 +126,14 @@
     
     // Set initial preset
     loadPreset(135, 82, 6.4, 78); // Rainy Outlook
-    
-    // Trigger initial prediction
-    updatePrediction();
+
+    // Demo: set gauge to 72% High on first load for visual parity with sample
+    setTimeout(() => {
+      updateGauge(72, 'High', 'Activate local response procedures.');
+      // update safety directives and map to match high state
+      updateSafetyDirectives(72, 'High');
+      updateMap(parseFloat(inputs.rainfall.slider.value), parseFloat(inputs.river_level.slider.value));
+    }, 120);
   }
 
   // --- Routing (SPA Navigation) ---

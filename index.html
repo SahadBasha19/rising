@@ -10,6 +10,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- Stylesheet -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- Direct static link for Live Server / file preview (works without Flask) -->
+  <link rel="stylesheet" href="/static/style.css">
+  <!-- Fallback for direct file/Live Server preview (non-Flask) -->
+  <script>
+    (function(){
+      // If Jinja placeholder is present (file preview), inject static stylesheet
+      var ls = document.querySelector('link[rel="stylesheet"]');
+      if (ls && ls.getAttribute('href') && ls.getAttribute('href').includes('{{')) {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/static/style.css';
+        document.head.appendChild(link);
+      }
+    })();
+  </script>
 </head>
 <body>
   <div class="app-shell">
@@ -615,5 +630,24 @@
   </div>
 
   <script src="{{ url_for('static', filename='app.js') }}"></script>
+  <!-- Direct static script for Live Server / file preview (works without Flask) -->
+  <script src="/static/app.js" defer></script>
+  <!-- Fallback app script for non-Flask preview -->
+  <script>
+    (function(){
+      var scripts = document.getElementsByTagName('script');
+      var found = false;
+      for (var i=0;i<scripts.length;i++){
+        var src = scripts[i].getAttribute && scripts[i].getAttribute('src');
+        if (src && src.indexOf('{{') !== -1) { found = true; break; }
+      }
+      if (found) {
+        var sc = document.createElement('script');
+        sc.src = '/static/app.js';
+        sc.defer = true;
+        document.body.appendChild(sc);
+      }
+    })();
+  </script>
 </body>
 </html>
