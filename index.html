@@ -12,15 +12,20 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <!-- Direct static link for Live Server / file preview (works without Flask) -->
   <link rel="stylesheet" href="/static/style.css">
+  <!-- Relative fallback for GitHub / raw preview when index.html is inside templates/ -->
+  <link rel="stylesheet" href="../static/style.css">
   <!-- Fallback for direct file/Live Server preview (non-Flask) -->
   <script>
     (function(){
-      // If Jinja placeholder is present (file preview), inject static stylesheet
-      var ls = document.querySelector('link[rel="stylesheet"]');
-      if (ls && ls.getAttribute('href') && ls.getAttribute('href').includes('{{')) {
+      var links = document.querySelectorAll('link[rel="stylesheet"]');
+      var hasJinja = Array.from(links).some(function(link){
+        var href = link.getAttribute('href');
+        return href && href.indexOf('{{') !== -1;
+      });
+      if (hasJinja) {
         var link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = '/static/style.css';
+        link.href = '../static/style.css';
         document.head.appendChild(link);
       }
     })();
@@ -632,6 +637,8 @@
   <script src="{{ url_for('static', filename='app.js') }}"></script>
   <!-- Direct static script for Live Server / file preview (works without Flask) -->
   <script src="/static/app.js" defer></script>
+  <!-- Relative fallback for GitHub / raw preview when index.html is inside templates/ -->
+  <script src="../static/app.js" defer></script>
   <!-- Fallback app script for non-Flask preview -->
   <script>
     (function(){
@@ -643,7 +650,7 @@
       }
       if (found) {
         var sc = document.createElement('script');
-        sc.src = '/static/app.js';
+        sc.src = '../static/app.js';
         sc.defer = true;
         document.body.appendChild(sc);
       }
