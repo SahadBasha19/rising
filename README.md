@@ -11,6 +11,10 @@ Rising Waters is an educational machine-learning prototype that estimates flood 
 - Flood-risk probability and plain-language recommendation
 - Input validation and clear safety guidance
 
+## 🎥 Demo video of the project
+
+➡️ [Watch Demo Video](DRIVE_LINK.md)
+
 ## Quick start
 
 ```bash
